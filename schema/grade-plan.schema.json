@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Canvas Grade Plan v1.0",
+  "description": "插件唯一接受的成绩计划。原始评测证据须先转换。",
+  "$comment": "学号/用户/题目唯一性、score <= max_score、origin 规范性和 20 MiB 文件上限由运行时额外校验。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "scope", "students"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": "1.0"},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["origin", "course_id", "assignment_id", "quiz_id"],
+      "properties": {
+        "origin": {"type": "string", "pattern": "^(?:https://[^\\s/@?#]+|http://(?:localhost|127\\.0\\.0\\.1)(?::[0-9]+)?)$"},
+        "course_id": {"$ref": "#/$defs/id"},
+        "assignment_id": {"$ref": "#/$defs/id"},
+        "quiz_id": {"$ref": "#/$defs/id"}
+      }
+    },
+    "students": {"type": "array", "minItems": 1, "maxItems": 10000, "items": {"$ref": "#/$defs/student"}},
+    "conversion_warnings": {"type": "array", "items": {"$ref": "#/$defs/warning"}}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[0-9]+$"},
+    "studentId": {"type": "string", "pattern": "^[A-Za-z0-9_-]{1,64}$"},
+    "score": {"type": "string", "pattern": "^[0-9]{1,8}(?:\\.[0-9]{1,6})?$"},
+    "student": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["student_id", "canvas_user_id", "quiz_submission_id", "submission_version", "questions"],
+      "properties": {
+        "student_id": {"$ref": "#/$defs/studentId"},
+        "canvas_user_id": {"$ref": "#/$defs/id"},
+        "quiz_submission_id": {"anyOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
+        "submission_version": {"anyOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
+        "questions": {"type": "array", "minItems": 1, "maxItems": 500, "items": {"$ref": "#/$defs/question"}}
+      },
+      "anyOf": [
+        {"properties": {"quiz_submission_id": {"type": "null"}, "submission_version": {"type": "null"}}},
+        {"properties": {"quiz_submission_id": {"$ref": "#/$defs/id"}, "submission_version": {"$ref": "#/$defs/id"}}}
+      ]
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform_question_id", "source_attachment_id", "source_sha256", "score", "max_score", "comment", "review_status"],
+      "properties": {
+        "platform_question_id": {"$ref": "#/$defs/id"},
+        "source_attachment_id": {"$ref": "#/$defs/id"},
+        "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "score": {"$ref": "#/$defs/score"},
+        "max_score": {"$ref": "#/$defs/score"},
+        "comment": {"type": "string", "maxLength": 20000},
+        "review_status": {"enum": ["ready", "needs_review", "skip"]}
+      }
+    },
+    "warning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["student_id", "question_id", "reasons"],
+      "properties": {
+        "student_id": {"$ref": "#/$defs/studentId"},
+        "question_id": {"$ref": "#/$defs/id"},
+        "reasons": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      }
+    }
+  }
+}

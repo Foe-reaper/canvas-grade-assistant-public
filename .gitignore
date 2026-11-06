@@ -1,0 +1,12 @@
+# Keep private grades, logs and local files out of the repository.
+*.plan.json
+!examples/demo.plan.json
+results.json
+canvas-grade-log*.json
+local/
+artifacts/
+submissions/
+node_modules/
+.env*
+*.log
+.DS_Store

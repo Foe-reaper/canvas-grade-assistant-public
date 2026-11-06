@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Canvas 成绩录入助手（本地版）",
+  "version": "0.1.6",
+  "description": "核对学生与源附件后填写 Classic Quiz 分数和逐题评语。",
+  "permissions": ["activeTab", "scripting"],
+  "action": {"default_title": "打开成绩录入助手"},
+  "background": {"service_worker": "background.js"},
+  "content_security_policy": {"extension_pages": "script-src 'self'; object-src 'none'; connect-src 'none'"}
+}

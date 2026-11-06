@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "scope": {
+    "origin": "https://canvas.example.edu",
+    "course_id": "100001",
+    "assignment_id": "200001",
+    "quiz_id": "300001"
+  },
+  "students": [
+    {
+      "student_id": "DEMO001",
+      "canvas_user_id": "400001",
+      "quiz_submission_id": null,
+      "submission_version": null,
+      "questions": [
+        {
+          "platform_question_id": "500001",
+          "source_attachment_id": "600001",
+          "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "score": "2.5",
+          "max_score": "3",
+          "comment": "边界情况未通过，扣 0.5 分。",
+          "review_status": "ready"
+        }
+      ]
+    }
+  ]
+}
